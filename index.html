@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>پیام از مبینا</title>
+  <style>
+    :root{--bg:#fff6fb;--card:#ffffff;--accent:#ff467e}
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0;font-family:Tahoma, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;background:linear-gradient(180deg,var(--bg),#fff);color:#222}
+    .wrap{min-height:100%;display:flex;align-items:center;justify-content:center;padding:48px}
+    .card{width:100%;max-width:760px;background:var(--card);border-radius:14px;padding:28px 28px 36px;box-shadow:0 10px 30px rgba(0,0,0,0.08);position:relative;overflow:hidden}
+
+    .from{font-size:20px;font-weight:700;color:var(--accent);margin-bottom:12px}
+    .title{font-size:28px;font-weight:800;margin:6px 0 18px}
+    .message{line-height:1.8;font-size:17px;color:#333;background:linear-gradient(90deg,rgba(255,70,126,0.03),transparent);padding:18px;border-radius:10px}
+
+    /* floating heart container */
+    .hearts{position:absolute;inset:0;pointer-events:none}
+    .heart{position:absolute;bottom:8%;font-size:24px;opacity:0;transform:translateY(0) scale(0.9);animation:rise 4s linear forwards}
+    @keyframes rise{
+      0%{opacity:0;transform:translateY(0) scale(0.9)}
+      10%{opacity:1}
+      60%{opacity:1}
+      100%{transform:translateY(-120vh) scale(1.2);opacity:0}
+    }
+
+    /* small footer */
+    .hint{margin-top:18px;font-size:14px;color:#666}
+
+    /* responsive */
+    @media (max-width:560px){.card{padding:18px}.title{font-size:22px}.message{font-size:16px}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card" role="main">
+      <div class="from">از طرف مبینا — فقط تو</div>
+      <div class="title">می‌خوام اول از همه همین‌جا ازت معذرت‌خواهی کنم</div>
+
+      <div class="message" id="message">
+        می‌خوام اول از همه همین‌جا ازت معذرت‌خواهی کنم. واقعاً نمی‌خواستم ناراحتت کنم و اگر رفتاری داشتم که باعث شد دلخور بشی، از صمیم قلب بابتش متأسفم.
+
+        <br><br>
+        راستش رو بخوای، تو از اون آدم‌هایی هستی که حضورشون خودش یه حال خوبه.
+        ظاهر دوست‌داشتنی و چهره‌ی روشن و آرومی داری که باعث میشه هر کسی کنارت حس راحتی کنه. موهات هم یه جوری‌ان که انگار خودشون آرامش پخش می‌کنن.
+
+        <br><br>
+        از هنرت بگم… واقعاً همیشه برام جالبه که چطور این‌همه قشنگ پیانو می‌زنی. انگار انگشت‌هات با کلیدها حرف می‌زنن. هنرمندی‌ت قابل تحسینه.
+        ورزشکاری‌ت هم همین‌طور—این‌که انقدر فعال و پرانرژی هستی واقعاً الهام‌بخشه.
+
+        <br><br>
+        اخلاقت؟
+        همیشه با احترام، باحوصله و خوش‌برخوردی، و همین ویژگی‌هات باعث میشه آدم بخواد کنار تو بهترین نسخه‌ی خودش باشه.
+
+        <br><br>
+        اگر اشتباهی کردم یا حرفی زدم که ناراحتت کرده، امیدوارم با بزرگ‌منشی همیشگیت منو ببخشی.
+        واقعاً برام مهمه که بدونی همیشه بهت احترام می‌ذارم و ارزش خوبی‌هاتو می‌فهمم.
+      </div>
+
+      <div class="hint">صفحه رو باز نگه دار تا قلب‌ها بالا بیان ♥</div>
+
+      <div class="hearts" id="hearts" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <script>
+    // تعداد و سرعت تولید قلب‌ها را اینجا می‌توانید تغییر دهید
+    const HEART_INTERVAL_MS = 420; // هر 420 میلی‌ثانیه یک قلب
+    const MAX_HEARTS = 120; // حداکثر قلب‌های هم‌زمان روی صفحه
+    const heartsContainer = document.getElementById('hearts');
+    let heartsCount = 0;
+    let producing = true;
+
+    function rand(min, max){ return Math.random()*(max-min)+min }
+
+    function makeHeart(){
+      if (!producing) return;
+      if (heartsCount > MAX_HEARTS) return;
+
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.innerText = ['❤','💖','💗','💕'][Math.floor(Math.random()*4)];
+
+      // تعیین موقعیت و اندازه تصادفی
+      const size = Math.floor(rand(18,36));
+      heart.style.fontSize = size + 'px';
+      heart.style.left = (rand(6,94)) + '%';
+
+      // اضافه کردن به صفحه
+      heartsContainer.appendChild(heart);
+      heartsCount++;
+
+      // بعد از پایان انیمیشن، حذفش کن
+      setTimeout(()=>{
+        if (heart && heart.parentNode) heart.parentNode.removeChild(heart);
+        heartsCount--;
+      }, 4500);
+    }
+
+    // تولید مداوم قلب‌ها در زمانی که صفحه مرئی است
+    let intervalId = null;
+    function startProducing(){
+      if (intervalId) return;
+      producing = true;
+      intervalId = setInterval(makeHeart, HEART_INTERVAL_MS);
+    }
+    function stopProducing(){
+      producing = false;
+      if (intervalId){ clearInterval(intervalId); intervalId = null }
+    }
+
+    // اگر تب مرورگر مخفی شد، تولید قلب‌ها را متوقف کن برای صرفه‌جویی
+    document.addEventListener('visibilitychange', ()=>{
+      if (document.hidden) stopProducing(); else startProducing();
+    });
+
+    // شروع اولیه
+    startProducing();
+
+    // امکان توقف یا شروع با کلیک بلند روی کارت (اختیاری)
+    const card = document.querySelector('.card');
+    card.addEventListener('dblclick', ()=>{
+      if (producing) stopProducing(); else startProducing();
+    });
+
+  </script>
+</body>
+</html>
